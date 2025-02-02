@@ -33,27 +33,44 @@ export const Home = () => {
   };
 
   const generateUniqueId = () => {
-    const timestamp = Date.now().toString(36); // Convert current time to base36 string
-    const randomNum = Math.random().toString(36).substr(2, 5); // Generate a random number and convert to base36 string
-    return `${timestamp}-${randomNum}`; // Combine timestamp and random number to create a unique ID
+    const timestamp = Date.now().toString(36);
+    const randomNum = Math.random().toString(36).substr(2, 5);
+    return `${timestamp}-${randomNum}`;
   };
 
   const handleSave = () => {
     const newId = generateUniqueId();
     const updatedUserData = { ...userData, id: newId };
-    setUserData(updatedUserData);
+
+    // Save to localStorage
     localStorage.setItem("userData", JSON.stringify(updatedUserData));
     setHasUnsavedChanges(false);
+
+    // Display submitted data in the rich text editor
+    const formattedData = `
+      <h2>Submitted Data:</h2>
+      <pre>${JSON.stringify(updatedUserData, null, 2)}</pre>
+    `;
+    setEditorContent(formattedData);
+
+    // Clear input fields
+    setUserData({
+      name: "",
+      id: "",
+      address: "",
+      email: "",
+      phone: "",
+    });
   };
 
   const bgAnimation = useSpring({
     background: `linear-gradient(45deg, rgba(0,0,255,${
       count * 0.1
-    }), rgba(255,0,0,${count * 0.1}))`, // Gradient with animated opacity
+    }), rgba(255,0,0,${count * 0.1}))`,
     config: {
       tension: 170,
       friction: 26,
-      easing: easings.easeInOutCubic, // Use a bezier curve easing function
+      easing: easings.easeInOutCubic,
     },
   });
 
